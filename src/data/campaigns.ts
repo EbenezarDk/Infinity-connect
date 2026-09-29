@@ -1,0 +1,73 @@
+import type { Campaign } from '../types';
+
+export const campaigns: Campaign[] = [
+  {
+    id: 'camp-001',
+    name: 'Festival Service Update',
+    channel: 'whatsapp',
+    audienceLabel: 'All active customers — Tier 1 & 2 cities',
+    audienceSize: 12480,
+    status: 'scheduled',
+    scheduledAt: '2026-09-30T10:00:00',
+    delivered: 0,
+    engaged: 0,
+    failedCount: 0,
+    templateName: 'festival_service_update_v1',
+  },
+  {
+    id: 'camp-002',
+    name: 'Payment Reminder — September',
+    channel: 'sms',
+    audienceLabel: 'Customers with pending invoices',
+    audienceSize: 3210,
+    status: 'completed',
+    scheduledAt: '2026-09-24T09:00:00',
+    delivered: 3184,
+    engaged: 1042,
+    failedCount: 26,
+    templateName: 'payment_reminder_sms',
+  },
+  {
+    id: 'camp-003',
+    name: 'New Feature Announcement',
+    channel: 'email',
+    audienceLabel: 'Subscribed newsletter list',
+    audienceSize: 8760,
+    status: 'sending',
+    scheduledAt: '2026-09-29T08:00:00',
+    delivered: 5210,
+    engaged: 890,
+    failedCount: 14,
+    templateName: 'feature_announcement_sept',
+  },
+  {
+    id: 'camp-004',
+    name: 'Delivery Delay Advisory',
+    channel: 'whatsapp',
+    audienceLabel: 'Customers with active orders — West region',
+    audienceSize: 1540,
+    status: 'draft',
+    scheduledAt: '2026-10-02T09:00:00',
+    delivered: 0,
+    engaged: 0,
+    failedCount: 0,
+    templateName: 'delivery_delay_advisory',
+  },
+  {
+    id: 'camp-005',
+    name: 'Loyalty Program Launch',
+    channel: 'rcs',
+    audienceLabel: 'High-value customers (VIP tag)',
+    audienceSize: 640,
+    status: 'paused',
+    scheduledAt: '2026-09-27T11:00:00',
+    delivered: 210,
+    engaged: 96,
+    failedCount: 3,
+    templateName: 'loyalty_launch_rich',
+  },
+];
+
+export function getCampaignById(id?: string): Campaign | undefined {
+  return campaigns.find((c) => c.id === id);
+}
