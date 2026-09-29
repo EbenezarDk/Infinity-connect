@@ -34,7 +34,7 @@ export const channelConfigs: ChannelConfig[] = [
     health: 'disconnected',
     connectionLabel: 'Agent verification pending with carrier',
     capabilities: ['Rich cards', 'Suggested replies', 'Read receipts'],
-    messagesToday: 0,
+    messagesToday: 96,
     lastSyncLabel: '3 hours ago',
   },
 ];

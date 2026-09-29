@@ -17,6 +17,7 @@ import { campaigns } from '../../data/campaigns';
 import { channelConfigs } from '../../data/channels';
 import { getContactById } from '../../data/contacts';
 import { EmptyState } from './EmptyState';
+import { color, radius } from '../../theme/tokens';
 
 interface SearchGroupItem {
   id: string;
@@ -129,26 +130,33 @@ export function GlobalSearch() {
           display: 'flex',
           alignItems: 'center',
           gap: 1,
-          px: 1.5,
-          py: 0.85,
-          borderRadius: 2,
-          border: '1px solid',
-          borderColor: 'divider',
-          backgroundColor: 'background.paper',
-          color: 'text.secondary',
-          minWidth: { xs: 40, sm: 300 },
-          justifyContent: { xs: 'center', sm: 'flex-start' },
-          transition: 'border-color 140ms ease, box-shadow 140ms ease',
+          px: 2,
+          py: 1.5,
+          borderRadius: `${radius.sm}px`,
+          border: 'none',
+          backgroundColor: color.bgSubtle,
+          color: color.textMuted,
+          width: { xs: 40, sm: 232 },
+          minHeight: 44,
+          justifyContent: { xs: 'center', sm: 'space-between' },
+          transition: 'background-color 140ms ease',
           '&:hover': {
-            borderColor: 'primary.light',
-            boxShadow: '0 0 0 3px rgba(26,107,255,0.08)',
+            backgroundColor: '#EEEEEE',
           },
         }}
       >
-        <SearchRoundedIcon fontSize="small" />
-        <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
-          Search conversations, contacts, campaigns…
+        <Typography
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            fontSize: '0.875rem',
+            fontWeight: 700,
+            lineHeight: '18px',
+            color: color.textMuted,
+          }}
+        >
+          Search
         </Typography>
+        <SearchRoundedIcon sx={{ fontSize: 20, color: color.textPrimary }} />
       </ButtonBase>
 
       <Dialog
@@ -166,7 +174,7 @@ export function GlobalSearch() {
             placeholder="Search conversations, contacts, campaigns, channels…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            sx={{ fontSize: '0.9375rem' }}
+            sx={{ fontSize: '0.9375rem', fontWeight: 500 }}
             inputProps={{ 'aria-label': 'Search InfinityConnect' }}
           />
         </Box>
@@ -215,7 +223,7 @@ export function GlobalSearch() {
                     >
                       <group.icon fontSize="small" style={{ color: 'var(--mui-palette-text-secondary)' }} />
                       <Box sx={{ minWidth: 0 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }} noWrap>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: color.textPrimary }} noWrap>
                           {item.label}
                         </Typography>
                         <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block' }}>

@@ -9,7 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import type { AiSummary, Message } from '../../types';
-import { color } from '../../theme/tokens';
+import { color, radius } from '../../theme/tokens';
 import { MessageBubble } from '../conversations/MessageBubble';
 
 interface AISummaryProps {
@@ -25,39 +25,108 @@ export function AISummary({ summary, sourceMessages }: AISummaryProps) {
     <>
       <Box
         sx={{
-          mx: { xs: 1.5, md: 3 },
+          mx: { xs: 1.5, md: '22px' },
           mt: 1.5,
-          mb: 0.5,
-          borderRadius: 1.5,
-          border: '1px solid',
-          borderColor: `${color.aiAccent}33`,
-          backgroundColor: color.aiSurface,
+          mb: 1,
+          borderRadius: `${radius.md}px`,
+          border: `1px solid ${color.border}`,
+          backgroundColor: color.bgSurface,
           overflow: 'hidden',
+          position: 'relative',
+          boxShadow: '0 1px 2px rgba(0, 24, 51, 0.04)',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 3,
+            background: `linear-gradient(180deg, ${color.primary} 0%, ${color.aiAccent} 100%)`,
+          },
         }}
       >
         <ButtonBase
           onClick={() => setExpanded((e) => !e)}
-          sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: 1, px: 1.5, py: 1, justifyContent: 'flex-start' }}
+          sx={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.25,
+            px: '18px',
+            py: 1.25,
+            justifyContent: 'flex-start',
+            pl: '20px',
+          }}
           aria-expanded={expanded}
         >
-          <AutoAwesomeRoundedIcon sx={{ fontSize: 16, color: color.aiAccent }} />
-          <Typography variant="body2" sx={{ fontWeight: 700, color: color.aiAccent, flex: 1, textAlign: 'left' }}>
-            AI Summary
-          </Typography>
+          <Box
+            sx={{
+              width: 28,
+              height: 28,
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: `linear-gradient(135deg, ${color.primarySurface} 0%, ${color.aiSurface} 100%)`,
+              flexShrink: 0,
+            }}
+          >
+            <AutoAwesomeRoundedIcon sx={{ fontSize: 16, color: color.primary }} />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+            <Typography
+              sx={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: color.textMuted,
+                lineHeight: '14px',
+              }}
+            >
+              Live assist
+            </Typography>
+            <Typography sx={{ fontSize: '14px', fontWeight: 700, lineHeight: '18px', color: color.textPrimary }}>
+              AI Summary
+            </Typography>
+          </Box>
           <ExpandMoreRoundedIcon
-            sx={{ fontSize: 18, color: color.aiAccent, transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 150ms' }}
+            sx={{
+              fontSize: 20,
+              color: color.textSecondary,
+              transform: expanded ? 'rotate(180deg)' : 'none',
+              transition: 'transform 160ms ease',
+            }}
           />
         </ButtonBase>
+
         <Collapse in={expanded}>
-          <Box sx={{ px: 1.5, pb: 1.5 }}>
-            <Typography variant="body2" sx={{ color: 'text.primary', lineHeight: 1.6 }}>
+          <Box sx={{ px: '20px', pb: '18px', pt: 0.25 }}>
+            <Typography
+              sx={{
+                fontSize: '13px',
+                fontWeight: 500,
+                lineHeight: '20px',
+                color: color.textPrimary,
+              }}
+            >
               {summary.summary}
             </Typography>
             <ButtonBase
               onClick={() => setSourcesOpen(true)}
-              sx={{ mt: 0.75, fontSize: '0.75rem', fontWeight: 700, color: color.aiAccent, textDecoration: 'underline' }}
+              sx={{
+                mt: 1.25,
+                fontSize: '12px',
+                fontWeight: 700,
+                color: color.primary,
+                borderRadius: '100px',
+                px: 1.25,
+                py: 0.5,
+                border: `1px solid ${color.primary}`,
+                '&:hover': { backgroundColor: color.primarySurface },
+              }}
             >
-              View source messages
+              View source messages →
             </ButtonBase>
           </Box>
         </Collapse>

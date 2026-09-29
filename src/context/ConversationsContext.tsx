@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Conversation, ConversationStatus, Message } from '../types';
 import { conversations as seedConversations } from '../data/conversations';
 
@@ -16,8 +16,47 @@ const ConversationsContext = createContext<ConversationsContextValue | undefined
 
 let messageCounter = 1000;
 
+function cloneSeed(): Conversation[] {
+  return structuredClone(seedConversations);
+}
+
 export function ConversationsProvider({ children }: { children: ReactNode }) {
-  const [conversations, setConversations] = useState<Conversation[]>(seedConversations);
+  const [conversations, setConversations] = useState<Conversation[]>(cloneSeed);
+
+  // Merge newly added seed conversations and refresh list-sort metadata from seed
+  // without wiping in-session mutations on message history.
+  const seedStamp = seedConversations.map((c) => `${c.id}:${c.lastMessageAt}:${c.lastMessagePreview}`).join('|');
+  useEffect(() => {
+    setConversations((prev) => {
+      const byId = new Map(prev.map((c) => [c.id, c]));
+      let changed = false;
+      for (const seed of seedConversations) {
+        const existing = byId.get(seed.id);
+        if (!existing) {
+          byId.set(seed.id, structuredClone(seed));
+          changed = true;
+          continue;
+        }
+        if (
+          existing.lastMessageAt !== seed.lastMessageAt ||
+          existing.lastMessagePreview !== seed.lastMessagePreview ||
+          existing.unread !== seed.unread ||
+          existing.slaMinutesRemaining !== seed.slaMinutesRemaining
+        ) {
+          byId.set(seed.id, {
+            ...existing,
+            lastMessageAt: seed.lastMessageAt,
+            lastMessagePreview: seed.lastMessagePreview,
+            unread: seed.unread,
+            slaMinutesRemaining: seed.slaMinutesRemaining,
+            priority: seed.priority,
+          });
+          changed = true;
+        }
+      }
+      return changed ? Array.from(byId.values()) : prev;
+    });
+  }, [seedStamp]);
 
   const addSystemEvent = (conv: Conversation, text: string): Conversation => ({
     ...conv,

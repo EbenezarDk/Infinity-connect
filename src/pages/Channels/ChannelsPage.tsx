@@ -11,10 +11,12 @@ import Divider from '@mui/material/Divider';
 import { channelConfigs as initialChannels } from '../../data/channels';
 import { ChannelIcon } from '../../components/common/ChannelIcon';
 import { ChannelHealthChip } from '../../components/common/StatusChip';
+import { PageHeader } from '../../components/common/PageHeader';
 import { useSnackbar } from '../../context/SnackbarContext';
 import { PermissionGate } from '../../components/common/PermissionGate';
 import { formatNumber } from '../../utils/format';
 import { channelMeta } from '../../utils/meta';
+import { color, radius } from '../../theme/tokens';
 import type { ChannelConfig } from '../../types';
 
 export function ChannelsPage() {
@@ -33,14 +35,12 @@ export function ChannelsPage() {
   };
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'auto', p: { xs: 2, md: 3 } }} className="ic-fade-up">
-      <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>
-        Channels
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
-        WhatsApp-first connectivity, expanding to SMS, Email, and RCS
-      </Typography>
-
+    <Box sx={{ height: '100%', overflowY: 'auto', backgroundColor: color.bgApp }} className="ic-fade-up">
+      <PageHeader
+        title="Channels"
+        subtitle="WhatsApp-first connectivity, expanding to SMS, Email, and RCS"
+      />
+      <Box sx={{ p: { xs: 2, md: 2 }, pt: { xs: 2, md: 3 } }}>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
         {channels.map((c) => {
           const meta = channelMeta[c.channel];
@@ -51,10 +51,9 @@ export function ChannelsPage() {
               flex: '1 1 300px',
               minWidth: 280,
               maxWidth: 420,
-              border: '1px solid',
-              borderColor: 'divider',
-              borderRadius: 2.5,
-              backgroundColor: 'background.paper',
+              border: `1px solid ${color.border}`,
+              borderRadius: `${radius.md}px`,
+              backgroundColor: color.bgSurface,
               p: 2.5,
               position: 'relative',
               overflow: 'hidden',
@@ -143,6 +142,7 @@ export function ChannelsPage() {
           </>
         )}
       </Dialog>
+      </Box>
     </Box>
   );
 }

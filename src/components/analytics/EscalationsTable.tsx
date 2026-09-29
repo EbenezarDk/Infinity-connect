@@ -1,24 +1,79 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableBody from '@mui/material/TableBody';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useConversations } from '../../context/ConversationsContext';
 import { useSnackbar } from '../../context/SnackbarContext';
 import { getContactById } from '../../data/contacts';
 import { getAgentById, agents } from '../../data/agents';
-import { PriorityChip } from '../common/StatusChip';
 import { formatRelativeTime } from '../../utils/format';
 import { EmptyState } from '../common/EmptyState';
 import ReportOffRoundedIcon from '@mui/icons-material/ReportOffRounded';
+import { color, radius } from '../../theme/tokens';
+import { priorityMeta } from '../../utils/meta';
+import type { Conversation, Priority } from '../../types';
+
+const HEADER_BG = '#F1F6FB';
+const TITLE_COLOR = '#000314';
+const URGENT_COLOR = '#FF0B0B';
+
+const PRIORITY_ORDER: Record<Priority, number> = {
+  urgent: 0,
+  high: 1,
+  normal: 2,
+  low: 3,
+};
+
+const pillButtonSx = {
+  borderRadius: '100px',
+  px: '14px',
+  py: '10px',
+  minHeight: 0,
+  fontSize: '14px',
+  fontWeight: 700,
+  lineHeight: '18px',
+  textTransform: 'none' as const,
+};
+
+interface EscalationRow {
+  conversation: Conversation;
+  customerName: string;
+  issue: string;
+  ownerName: string;
+  waitingLabel: string;
+  priority: Priority;
+  priorityLabel: string;
+  priorityColor: string;
+}
+
+function buildEscalationRows(conversations: Conversation[]): EscalationRow[] {
+  return conversations
+    .filter((c) => c.status === 'escalated')
+    .map((conversation) => {
+      const contact = getContactById(conversation.contactId);
+      const owner = getAgentById(conversation.assigneeId);
+      const priority = conversation.priority;
+      const meta = priorityMeta[priority];
+      return {
+        conversation,
+        customerName: contact?.name ?? 'Unknown customer',
+        issue: conversation.lastMessagePreview,
+        ownerName: owner?.name ?? 'Unassigned',
+        waitingLabel: formatRelativeTime(conversation.lastMessageAt),
+        priority,
+        priorityLabel: meta.label,
+        priorityColor: priority === 'urgent' || priority === 'high' ? URGENT_COLOR : meta.main,
+      };
+    })
+    .sort((a, b) => {
+      const byPriority = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+      if (byPriority !== 0) return byPriority;
+      return new Date(a.conversation.lastMessageAt).getTime() - new Date(b.conversation.lastMessageAt).getTime();
+    });
+}
 
 export function EscalationsTable() {
   const { conversations, assign, resolve } = useConversations();
@@ -26,11 +81,49 @@ export function EscalationsTable() {
   const navigate = useNavigate();
   const [reassignAnchor, setReassignAnchor] = useState<{ el: HTMLElement; conversationId: string } | null>(null);
 
-  const escalated = conversations.filter((c) => c.status === 'escalated');
+  const rows = useMemo(() => buildEscalationRows(conversations), [conversations]);
 
-  if (escalated.length === 0) {
+  const header = (
+    <Box sx={{ px: '22px' }}>
+      <Typography
+        sx={{
+          fontSize: '18px',
+          fontWeight: 700,
+          lineHeight: '26px',
+          letterSpacing: '0.036px',
+          color: TITLE_COLOR,
+        }}
+      >
+        Escalations
+      </Typography>
+      <Typography
+        sx={{
+          fontSize: '12px',
+          fontWeight: 500,
+          lineHeight: '18px',
+          color: color.textSecondary,
+        }}
+      >
+        Conversations that breached SLA or require supervisor intervention
+      </Typography>
+    </Box>
+  );
+
+  if (rows.length === 0) {
     return (
-      <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, backgroundColor: 'background.paper' }}>
+      <Box
+        sx={{
+          border: `1px solid ${color.border}`,
+          borderRadius: `${radius.md}px`,
+          backgroundColor: color.bgSurface,
+          py: '22px',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1.5,
+        }}
+      >
+        {header}
         <EmptyState
           icon={<ReportOffRoundedIcon />}
           title="No active escalations"
@@ -42,78 +135,245 @@ export function EscalationsTable() {
   }
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, backgroundColor: 'background.paper', overflow: 'hidden' }}>
-      <Box sx={{ p: 2, pb: 1 }}>
-        <Typography variant="h4">Escalations</Typography>
-        <Typography variant="body2" color="text.secondary">
-          Conversations that breached SLA or require supervisor intervention
-        </Typography>
-      </Box>
-      <TableContainer sx={{ overflowX: 'auto' }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Customer</TableCell>
-              <TableCell>Issue</TableCell>
-              <TableCell>Current owner</TableCell>
-              <TableCell>Time waiting</TableCell>
-              <TableCell>Priority</TableCell>
-              <TableCell align="right">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {escalated.map((c) => {
-              const contact = getContactById(c.contactId);
-              const owner = getAgentById(c.assigneeId);
-              return (
-                <TableRow key={c.id} hover>
-                  <TableCell>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {contact?.name}
+    <Box
+      sx={{
+        border: `1px solid ${color.border}`,
+        borderRadius: `${radius.md}px`,
+        backgroundColor: color.bgSurface,
+        overflow: 'hidden',
+        py: '22px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1.5,
+      }}
+    >
+      {header}
+
+      <Box sx={{ overflowX: 'auto', width: '100%' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: HEADER_BG,
+          minWidth: { xs: 720, sm: 880 },
+        }}
+      >
+        {[
+          { label: 'Customer', width: 168 },
+          { label: 'Issue', width: 311 },
+          { label: 'Current owner', width: 184 },
+          { label: 'Time waiting', width: 113 },
+        ].map((col) => (
+            <Box key={col.label} sx={{ width: col.width, flexShrink: 0, px: '12px', py: '16px' }}>
+              <Typography
+                sx={{
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  lineHeight: '18px',
+                  color: color.textSecondary,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {col.label}
+              </Typography>
+            </Box>
+          ))}
+          <Box
+            sx={{
+              flex: 1,
+              minWidth: 280,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 0.5,
+              px: '12px',
+              py: '16px',
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: '12px',
+                fontWeight: 700,
+                lineHeight: '18px',
+                color: color.textSecondary,
+                textTransform: 'uppercase',
+              }}
+            >
+              Priority
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: '12px',
+                fontWeight: 700,
+                lineHeight: '18px',
+                color: color.textSecondary,
+                textTransform: 'uppercase',
+                textAlign: 'right',
+              }}
+            >
+              Action
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, minWidth: { xs: 720, sm: 880 }, pt: 1.5 }}>
+          {rows.map((row, index) => {
+            const { conversation: c } = row;
+            return (
+              <Box key={c.id}>
+                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                  <Box sx={{ width: 168, flexShrink: 0, px: '12px' }}>
+                    <Typography
+                      sx={{
+                        fontSize: '14px',
+                        fontWeight: 700,
+                        lineHeight: '18px',
+                        color: color.textPrimary,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                      title={row.customerName}
+                    >
+                      {row.customerName}
                     </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 220 }} noWrap>
-                      {c.lastMessagePreview}
+                  </Box>
+
+                  <Box sx={{ width: 311, flexShrink: 0, px: '12px', py: 1 }}>
+                    <Typography
+                      sx={{
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        lineHeight: '18px',
+                        color: color.textPrimary,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                      title={row.issue}
+                    >
+                      {row.issue}
                     </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">{owner?.name ?? 'Unassigned'}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" color="error.main" sx={{ fontWeight: 700 }}>
-                      {formatRelativeTime(c.lastMessageAt)}
+                  </Box>
+
+                  <Box sx={{ width: 184, flexShrink: 0, px: '12px', py: 1 }}>
+                    <Typography
+                      sx={{
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        lineHeight: '18px',
+                        color: color.textPrimary,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                      title={row.ownerName}
+                    >
+                      {row.ownerName}
                     </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <PriorityChip priority={c.priority} />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Box sx={{ display: 'flex', gap: 0.75, justifyContent: 'flex-end' }}>
-                      <Button size="small" variant="outlined" onClick={() => navigate(`/inbox?conversation=${c.id}`)}>
+                  </Box>
+
+                  <Box sx={{ width: 113, flexShrink: 0, px: '12px', py: 1 }}>
+                    <Typography
+                      sx={{
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        lineHeight: '18px',
+                        color: color.textPrimary,
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {row.waitingLabel}
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      flex: 1,
+                      minWidth: 280,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      px: '12px',
+                      py: 1,
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        flex: 1,
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        lineHeight: '18px',
+                        color: row.priorityColor,
+                        minWidth: 0,
+                      }}
+                    >
+                      {row.priorityLabel}
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1, flexShrink: 0 }}>
+                      <Button
+                        variant="outlined"
+                        onClick={() => navigate(`/inbox?conversation=${c.id}`)}
+                        sx={{
+                          ...pillButtonSx,
+                          borderColor: color.primary,
+                          color: color.primary,
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            borderColor: color.primaryDark,
+                            backgroundColor: color.primarySurface,
+                          },
+                        }}
+                      >
                         Open
                       </Button>
-                      <Button size="small" variant="outlined" onClick={(e) => setReassignAnchor({ el: e.currentTarget, conversationId: c.id })}>
+                      <Button
+                        variant="outlined"
+                        onClick={(e) => setReassignAnchor({ el: e.currentTarget, conversationId: c.id })}
+                        sx={{
+                          ...pillButtonSx,
+                          borderColor: color.primary,
+                          color: color.primary,
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            borderColor: color.primaryDark,
+                            backgroundColor: color.primarySurface,
+                          },
+                        }}
+                      >
                         Reassign
                       </Button>
                       <Button
-                        size="small"
                         variant="contained"
                         onClick={() => {
                           resolve(c.id);
-                          notify(`Resolved ${contact?.name}'s conversation`);
+                          notify(`Resolved ${row.customerName}'s conversation`);
+                        }}
+                        sx={{
+                          ...pillButtonSx,
+                          backgroundColor: color.primary,
+                          color: '#fff',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            backgroundColor: color.primaryDark,
+                            boxShadow: 'none',
+                          },
                         }}
                       >
                         Resolve
                       </Button>
                     </Box>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  </Box>
+                </Box>
+
+                {index < rows.length - 1 && (
+                  <Box sx={{ height: 0, borderBottom: `1px solid ${color.border}`, mt: 1.5 }} />
+                )}
+              </Box>
+            );
+          })}
+        </Box>
+      </Box>
 
       <Menu anchorEl={reassignAnchor?.el} open={Boolean(reassignAnchor)} onClose={() => setReassignAnchor(null)}>
         {agents

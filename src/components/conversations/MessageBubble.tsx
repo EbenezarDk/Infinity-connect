@@ -13,6 +13,11 @@ import type { Message } from '../../types';
 import { formatTimeLabel } from '../../utils/format';
 import { color } from '../../theme/tokens';
 
+const BUBBLE_BORDER = '#EAF1FF';
+const NOTE_BG = '#FFF5EF';
+const NOTE_BORDER = '#FF9D68';
+const NOTE_ACCENT = '#B44203';
+
 function DeliveryStatus({ status }: { status?: Message['deliveryStatus'] }) {
   if (!status) return null;
   const map = {
@@ -36,60 +41,91 @@ export function MessageBubble({ message }: { message: Message }) {
 
   if (message.isInternal || message.type === 'internal_note') {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: { xs: 1.5, md: 3 }, mb: 1.5 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: '22px', mb: 2 }}>
         <Box
           sx={{
             maxWidth: '78%',
-            backgroundColor: '#FCF6E8',
-            border: '1px dashed',
-            borderColor: '#E4C87A',
-            borderRadius: 1.5,
-            px: 1.5,
-            py: 1,
+            backgroundColor: NOTE_BG,
+            border: `1px solid ${NOTE_BORDER}`,
+            borderRadius: '12px',
+            p: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.25,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-            <StickyNote2RoundedIcon sx={{ fontSize: 14, color: '#8A6D1F' }} />
-            <Typography variant="caption" sx={{ fontWeight: 700, color: '#8A6D1F' }}>
-              Internal note · {message.sender}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+              <StickyNote2RoundedIcon sx={{ fontSize: 18, color: NOTE_ACCENT }} />
+              <Typography sx={{ fontSize: '12px', fontWeight: 700, lineHeight: '18px', color: NOTE_ACCENT }}>
+                Internal note
+              </Typography>
+            </Box>
+            <Box sx={{ width: 3, height: 3, borderRadius: '50%', backgroundColor: NOTE_ACCENT }} />
+            <Typography sx={{ fontSize: '12px', fontWeight: 700, lineHeight: '18px', color: NOTE_ACCENT }}>
+              {message.sender}
             </Typography>
           </Box>
-          <Typography variant="body2" sx={{ color: '#4A3B10' }}>
+          <Typography sx={{ fontSize: '12px', fontWeight: 700, lineHeight: '18px', color: color.textPrimary }}>
             {message.text}
           </Typography>
-          <Typography variant="caption" sx={{ color: '#8A6D1F', display: 'block', mt: 0.5 }}>
-            {formatTimeLabel(message.timestamp)} · Visible to team only
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+            <Typography sx={{ fontSize: '12px', fontWeight: 500, lineHeight: '18px', color: color.textSecondary }}>
+              {formatTimeLabel(message.timestamp)}
+            </Typography>
+            <Box sx={{ width: 3, height: 3, borderRadius: '50%', backgroundColor: color.textMuted }} />
+            <Typography sx={{ fontSize: '12px', fontWeight: 500, lineHeight: '18px', color: color.textSecondary }}>
+              Visible to team only
+            </Typography>
+          </Box>
         </Box>
       </Box>
     );
   }
+
+  const hasAttachments = Boolean(message.attachments?.length);
+  const bubbleRadius = hasAttachments
+    ? isOutbound
+      ? '20px 16px 2px 20px'
+      : '16px 20px 20px 2px'
+    : isOutbound
+      ? '100px 16px 2px 100px'
+      : '16px 100px 100px 2px';
 
   return (
     <Box
       sx={{
         display: 'flex',
         justifyContent: isOutbound ? 'flex-end' : 'flex-start',
-        px: { xs: 1.5, md: 3 },
-        mb: 1.5,
+        px: '22px',
+        mb: 2,
       }}
     >
-      <Box sx={{ maxWidth: '78%', display: 'flex', flexDirection: 'column', alignItems: isOutbound ? 'flex-end' : 'flex-start' }}>
+      <Box
+        sx={{
+          maxWidth: '78%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: isOutbound ? 'flex-end' : 'flex-start',
+          gap: 0.75,
+        }}
+      >
         {!isOutbound && (
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.4, ml: 0.5 }}>
+          <Typography sx={{ fontSize: '14px', fontWeight: 500, lineHeight: '18px', color: color.textSecondary }}>
             {message.sender}
           </Typography>
         )}
         <Box
           sx={{
-            backgroundColor: isOutbound ? color.primary : color.bgSurface,
-            color: isOutbound ? '#fff' : 'text.primary',
-            border: isOutbound ? 'none' : '1px solid',
-            borderColor: 'divider',
-            borderRadius: isOutbound ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-            px: 1.75,
-            py: 1.1,
-            boxShadow: isOutbound ? '0 1px 2px rgba(26,107,255,0.25)' : 'none',
+            backgroundColor: color.bgSurface,
+            color: color.textPrimary,
+            border: `1px solid ${BUBBLE_BORDER}`,
+            borderRadius: bubbleRadius,
+            p: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: hasAttachments ? '10px' : 0,
+            alignItems: 'flex-start',
           }}
         >
           {message.type === 'template' && (
@@ -97,17 +133,18 @@ export function MessageBubble({ message }: { message: Message }) {
               size="small"
               label={`Template · ${message.templateName}`}
               sx={{
-                mb: 0.75,
                 height: 20,
-                backgroundColor: isOutbound ? 'rgba(255,255,255,0.18)' : color.primarySurface,
-                color: isOutbound ? '#fff' : color.primary,
+                backgroundColor: color.primarySurface,
+                color: color.primary,
               }}
             />
           )}
 
-          <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-            {message.text}
-          </Typography>
+          {message.text && (
+            <Typography sx={{ fontSize: '14px', fontWeight: 500, lineHeight: '18px', whiteSpace: 'pre-wrap' }}>
+              {message.text}
+            </Typography>
+          )}
 
           {message.attachments?.map((att) => (
             <Box
@@ -115,32 +152,62 @@ export function MessageBubble({ message }: { message: Message }) {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 1,
-                mt: 1,
-                px: 1,
-                py: 0.75,
-                borderRadius: 1,
-                backgroundColor: isOutbound ? 'rgba(255,255,255,0.14)' : color.bgSubtle,
+                gap: '10px',
+                p: '10px',
+                borderRadius: '12px',
+                backgroundColor: '#F4F4F4',
+                border: '1px solid #DDDDDD',
+                minWidth: { xs: 180, sm: 220 },
+                maxWidth: '100%',
               }}
             >
-              {att.type === 'image' ? (
-                <ImageRoundedIcon sx={{ fontSize: 18 }} />
-              ) : (
-                <InsertDriveFileRoundedIcon sx={{ fontSize: 18 }} />
-              )}
-              <Box sx={{ minWidth: 0 }}>
-                <Typography variant="caption" noWrap sx={{ display: 'block', fontWeight: 600 }}>
+              <Box
+                sx={{
+                  width: 24,
+                  height: 24,
+                  flexShrink: 0,
+                  borderRadius: '4px',
+                  backgroundColor: '#D9D9D9',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: color.textSecondary,
+                }}
+              >
+                {att.type === 'image' ? (
+                  <ImageRoundedIcon sx={{ fontSize: 16 }} />
+                ) : (
+                  <InsertDriveFileRoundedIcon sx={{ fontSize: 16 }} />
+                )}
+              </Box>
+              <Box sx={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <Typography
+                  noWrap
+                  sx={{
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    lineHeight: '18px',
+                    color: color.textPrimary,
+                  }}
+                >
                   {att.name}
                 </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.75 }}>
+                <Typography
+                  sx={{
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    lineHeight: '18px',
+                    color: color.textSecondary,
+                  }}
+                >
                   {att.sizeLabel}
                 </Typography>
               </Box>
             </Box>
           ))}
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.4, mx: 0.5 }}>
-          <Typography variant="caption" color="text.disabled">
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <Typography sx={{ fontSize: '14px', fontWeight: 500, lineHeight: '18px', color: color.textSecondary }}>
             {formatTimeLabel(message.timestamp)}
           </Typography>
           {isOutbound && <DeliveryStatus status={message.deliveryStatus} />}

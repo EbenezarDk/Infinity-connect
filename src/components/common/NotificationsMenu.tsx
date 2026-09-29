@@ -34,17 +34,35 @@ const kindColor: Record<NotificationItem['kind'], string> = {
   assignment: color.primary,
 };
 
-export function NotificationsMenu() {
+interface NotificationsMenuProps {
+  /** Prefer opening the panel to the right (e.g. collapsed inbox rail). */
+  placement?: 'bottom-end' | 'right-start';
+}
+
+export function NotificationsMenu({ placement = 'bottom-end' }: NotificationsMenuProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [items] = useState<NotificationItem[]>(seedNotifications);
   const unreadCount = items.filter((n) => !n.read).length;
 
+  const anchorOrigin =
+    placement === 'right-start'
+      ? ({ vertical: 'top', horizontal: 'right' } as const)
+      : ({ vertical: 'bottom', horizontal: 'right' } as const);
+  const transformOrigin =
+    placement === 'right-start'
+      ? ({ vertical: 'top', horizontal: 'left' } as const)
+      : ({ vertical: 'top', horizontal: 'right' } as const);
+
   return (
     <>
       <Tooltip title="Notifications">
-        <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} aria-label={`Notifications, ${unreadCount} unread`}>
+        <IconButton
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          aria-label={`Notifications, ${unreadCount} unread`}
+          sx={{ p: 1 }}
+        >
           <Badge badgeContent={unreadCount} color="error" invisible={unreadCount === 0}>
-            <NotificationsNoneRoundedIcon />
+            <NotificationsNoneRoundedIcon sx={{ fontSize: 20 }} />
           </Badge>
         </IconButton>
       </Tooltip>
@@ -52,19 +70,41 @@ export function NotificationsMenu() {
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        slotProps={{ paper: { sx: { width: 360, maxHeight: 480, borderRadius: 2 } } }}
+        anchorOrigin={anchorOrigin}
+        transformOrigin={transformOrigin}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 360,
+              maxHeight: 480,
+              borderRadius: 2,
+              border: `1px solid ${color.border}`,
+              boxShadow: '0 8px 24px rgba(0, 24, 51, 0.08)',
+            },
+          },
+        }}
       >
-        <Box sx={{ px: 2, py: 1.5 }}>
-          <Typography variant="subtitle1">Notifications</Typography>
+        <Box sx={{ px: '22px', pt: '22px', pb: 1.5 }}>
+          <Typography
+            sx={{
+              fontSize: '1.125rem',
+              fontWeight: 700,
+              lineHeight: '26px',
+              letterSpacing: '0.002em',
+              color: '#000314',
+            }}
+          >
+            Notifications
+          </Typography>
         </Box>
-        <Divider />
+        <Divider sx={{ borderColor: color.border }} />
         {items.length === 0 ? (
-          <EmptyState title="You're all caught up" description="No new notifications." compact />
+          <Box sx={{ p: '22px' }}>
+            <EmptyState title="You're all caught up" description="No new notifications." compact />
+          </Box>
         ) : (
-          <Box sx={{ overflowY: 'auto', maxHeight: 400 }}>
-            {items.map((n) => {
+          <Box sx={{ overflowY: 'auto', maxHeight: 400, px: '22px', pb: '22px' }}>
+            {items.map((n, index) => {
               const Icon = kindIcon[n.kind];
               return (
                 <Box
@@ -72,11 +112,11 @@ export function NotificationsMenu() {
                   sx={{
                     display: 'flex',
                     gap: 1.5,
-                    px: 2,
                     py: 1.5,
-                    borderBottom: '1px solid',
-                    borderColor: 'divider',
-                    backgroundColor: n.read ? 'transparent' : 'background.default',
+                    borderBottom: index < items.length - 1 ? `1px solid ${color.border}` : 'none',
+                    backgroundColor: n.read ? 'transparent' : color.bgSubtle,
+                    mx: '-22px',
+                    px: '22px',
                   }}
                 >
                   <Box

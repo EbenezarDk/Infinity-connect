@@ -18,33 +18,33 @@ import { CampaignStatusChip } from '../../components/common/StatusChip';
 import { CreateCampaignFlow } from '../../components/campaigns/CreateCampaignFlow';
 import { PermissionGate } from '../../components/common/PermissionGate';
 import { EmptyState } from '../../components/common/EmptyState';
+import { PageHeader } from '../../components/common/PageHeader';
 import { formatDateTimeLabel, formatNumber } from '../../utils/format';
 import { channelMeta } from '../../utils/meta';
+import { color, radius } from '../../theme/tokens';
 
 export function CampaignsPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'auto', p: { xs: 2, md: 3 } }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 1.5 }}>
-        <Box>
-          <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Campaigns</Typography>
-          <Typography variant="body2" color="text.secondary">
-            Plan, schedule, and monitor outbound communication
-          </Typography>
-        </Box>
-        <PermissionGate action="create_campaigns" fallbackLabel="Your role can view campaigns but not create new ones.">
-          <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => setCreateOpen(true)}>
-            New campaign
-          </Button>
-        </PermissionGate>
-      </Box>
-
+    <Box sx={{ height: '100%', overflowY: 'auto', backgroundColor: color.bgApp }}>
+      <PageHeader
+        title="Campaigns"
+        subtitle="Plan, schedule, and monitor outbound communication"
+        actions={
+          <PermissionGate action="create_campaigns" fallbackLabel="Your role can view campaigns but not create new ones.">
+            <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={() => setCreateOpen(true)} sx={{ mb: { xs: 1.5, md: 0 } }}>
+              New campaign
+            </Button>
+          </PermissionGate>
+        }
+      />
+      <Box sx={{ p: { xs: 2, md: 2 }, pt: { xs: 2, md: 3 } }}>
       {campaigns.length === 0 ? (
         <EmptyState icon={<CampaignRoundedIcon />} title="No campaigns yet" description="Create your first campaign to reach customers at scale." />
       ) : (
-        <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, backgroundColor: 'background.paper' }}>
+        <TableContainer sx={{ border: `1px solid ${color.border}`, borderRadius: `${radius.md}px`, backgroundColor: color.bgSurface }}>
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -109,6 +109,7 @@ export function CampaignsPage() {
       )}
 
       <CreateCampaignFlow open={createOpen} onClose={() => setCreateOpen(false)} />
+      </Box>
     </Box>
   );
 }

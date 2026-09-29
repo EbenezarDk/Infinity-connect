@@ -7,6 +7,8 @@ import Switch from '@mui/material/Switch';
 import Chip from '@mui/material/Chip';
 import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
 import { EmptyState } from '../../components/common/EmptyState';
+import { PageHeader } from '../../components/common/PageHeader';
+import { color, radius } from '../../theme/tokens';
 
 type AutomationTab = 'workflows' | 'rules' | 'triggers';
 
@@ -78,10 +80,9 @@ export function AutomationsPage() {
             alignItems: 'flex-start',
             gap: 1.5,
             p: 2,
-            borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'divider',
-            backgroundColor: 'background.paper',
+            borderRadius: `${radius.md}px`,
+            border: `1px solid ${color.border}`,
+            backgroundColor: color.bgSurface,
           }}
         >
           <Box sx={{ flex: 1 }}>
@@ -104,21 +105,28 @@ export function AutomationsPage() {
   );
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'auto' }}>
-      <Box sx={{ px: { xs: 2, md: 3 }, pt: { xs: 2, md: 3 }, pb: 1 }}>
-        <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Automations</Typography>
-        <Typography variant="body2" color="text.secondary">
-          Reduce repetitive work with workflows, rules, and triggers
-        </Typography>
-      </Box>
+    <Box sx={{ height: '100%', overflowY: 'auto', backgroundColor: color.bgApp }}>
+      <PageHeader
+        title="Automations"
+        subtitle="Reduce repetitive work with workflows, rules, and triggers"
+        tabs={
+          <Tabs
+            value={tab}
+            onChange={(_, v) => setTab(v)}
+            sx={{
+              minHeight: 44,
+              '& .MuiTabs-flexContainer': { alignItems: 'flex-end' },
+              '& .MuiTab-root': { minHeight: 44, pb: 1 },
+            }}
+          >
+            <Tab value="workflows" label="Workflows" />
+            <Tab value="rules" label="Rules" />
+            <Tab value="triggers" label="Triggers" />
+          </Tabs>
+        }
+      />
 
-      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ px: { xs: 2, md: 3 }, borderBottom: '1px solid', borderColor: 'divider' }}>
-        <Tab value="workflows" label="Workflows" />
-        <Tab value="rules" label="Rules" />
-        <Tab value="triggers" label="Triggers" />
-      </Tabs>
-
-      <Box sx={{ p: { xs: 2, md: 3 } }}>
+      <Box sx={{ p: { xs: 2, md: 2 }, pt: { xs: 2, md: 3 } }}>
         {tab === 'workflows' && renderList(workflows, toggleWorkflow)}
         {tab === 'rules' && renderList(rules, toggleRule)}
         {tab === 'triggers' && (

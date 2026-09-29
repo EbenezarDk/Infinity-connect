@@ -15,6 +15,7 @@ import { ConversationHistoryList, ActivityList } from './CustomerTimeline';
 import { getConversationHistoryForContact, getActivityForContact } from '../../utils/customerInsights';
 import { EmptyState } from '../common/EmptyState';
 import { formatDateTimeLabel } from '../../utils/format';
+import { color, layout } from '../../theme/tokens';
 
 type ContextTab = 'overview' | 'conversations' | 'activity' | 'notes' | 'tags';
 
@@ -70,19 +71,52 @@ export function CustomerContextPanel({ contactId, compact, hideProfileLink }: Cu
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Tabs
-        value={tab}
-        onChange={(_, v) => setTab(v)}
-        variant="scrollable"
-        scrollButtons={false}
-        sx={{ borderBottom: '1px solid', borderColor: 'divider', px: 1, flexShrink: 0 }}
+      <Box
+        sx={{
+          height: layout.inboxHeaderHeight,
+          minHeight: layout.inboxHeaderHeight,
+          boxSizing: 'border-box',
+          display: 'flex',
+          alignItems: 'flex-end',
+          borderBottom: '1px solid #D4D4D4',
+          px: '12px',
+          flexShrink: 0,
+          backgroundColor: color.bgSurface,
+        }}
       >
-        <Tab value="overview" label="Overview" />
-        <Tab value="conversations" label="Conversations" />
-        <Tab value="activity" label="Activity" />
-        <Tab value="notes" label="Notes" />
-        <Tab value="tags" label="Tags" />
-      </Tabs>
+        <Tabs
+          value={tab}
+          onChange={(_, v) => setTab(v)}
+          variant="scrollable"
+          scrollButtons={false}
+          sx={{
+            minHeight: 44,
+            width: '100%',
+            '& .MuiTabs-indicator': {
+              height: 2,
+              borderRadius: '4px 4px 0 0',
+              backgroundColor: color.primary,
+            },
+            '& .MuiTab-root': {
+              minHeight: 44,
+              height: 44,
+              px: 1.5,
+              textTransform: 'none',
+              fontWeight: 700,
+              fontSize: '14px',
+              lineHeight: '18px',
+              color: color.textSecondary,
+              '&.Mui-selected': { color: color.primary },
+            },
+          }}
+        >
+          <Tab value="overview" label="Overview" />
+          <Tab value="conversations" label="Conversations" />
+          <Tab value="activity" label="Activity" />
+          <Tab value="notes" label="Notes" />
+          <Tab value="tags" label="Tags" />
+        </Tabs>
+      </Box>
 
       <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto', p: compact ? 2 : 2.5 }}>
         {tab === 'overview' && (

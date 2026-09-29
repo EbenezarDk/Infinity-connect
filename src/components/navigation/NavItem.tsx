@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import Box from '@mui/material/Box';
+import ButtonBase from '@mui/material/ButtonBase';
 import Tooltip from '@mui/material/Tooltip';
 import type { NavItemConfig } from '../../config/navigation';
 import { color } from '../../theme/tokens';
@@ -19,45 +18,62 @@ export function NavItem({ item, collapsed, onNavigate }: NavItemProps) {
   const Icon = item.icon;
 
   const button = (
-    <ListItemButton
-      selected={isActive}
+    <ButtonBase
       onClick={() => {
         navigate(item.path);
         onNavigate?.();
       }}
       aria-current={isActive ? 'page' : undefined}
+      focusRipple={false}
       sx={{
-        gap: 1.25,
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: collapsed ? 'center' : 'flex-start',
-        px: collapsed ? 1 : 1.5,
-        py: 1.05,
-        color: isActive ? color.primaryDark : color.textSecondary,
-        border: '1px solid',
-        borderColor: isActive ? color.primaryLight : 'transparent',
-        backgroundColor: isActive ? color.primarySurface : 'transparent',
+        gap: '8px',
+        width: '100%',
+        height: 46,
+        px: collapsed ? 1 : '12px',
+        py: '12px',
+        borderRadius: '8px',
+        color: isActive ? '#FFFFFF' : '#6D6E78',
+        backgroundColor: isActive ? color.primary : 'transparent',
+        fontFamily: 'inherit',
+        textAlign: 'left',
+        transition: 'background-color 140ms ease, color 140ms ease',
         '&:hover': {
-          backgroundColor: isActive ? color.primaryLight : color.bgSubtle,
+          backgroundColor: isActive ? color.primaryDark : color.bgSubtle,
+          color: isActive ? '#FFFFFF' : color.textPrimary,
         },
       }}
     >
-      <ListItemIcon sx={{ minWidth: 0, color: 'inherit' }}>
-        <Icon fontSize="small" />
-      </ListItemIcon>
+      <Box
+        component="span"
+        sx={{
+          display: 'inline-flex',
+          width: 20,
+          height: 20,
+          flexShrink: 0,
+          color: 'inherit',
+          '& svg': { display: 'block', width: 20, height: 20 },
+        }}
+      >
+        <Icon />
+      </Box>
       {!collapsed && (
-        <ListItemText
-          primary={item.label}
-          slotProps={{
-            primary: {
-              sx: {
-                fontWeight: isActive ? 700 : 600,
-                fontSize: '0.875rem',
-                transition: 'font-weight 140ms ease',
-              },
-            },
+        <Box
+          component="span"
+          sx={{
+            fontWeight: 700,
+            fontSize: '14px',
+            lineHeight: '18px',
+            whiteSpace: 'nowrap',
+            color: 'inherit',
           }}
-        />
+        >
+          {item.label}
+        </Box>
       )}
-    </ListItemButton>
+    </ButtonBase>
   );
 
   if (collapsed) {

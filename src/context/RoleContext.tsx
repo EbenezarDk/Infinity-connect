@@ -11,7 +11,8 @@ interface RoleContextValue {
 const RoleContext = createContext<RoleContextValue | undefined>(undefined);
 
 export function RoleProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<Role>('agent');
+  // Default to admin so the shell matches the Figma design reference (full side nav).
+  const [role, setRole] = useState<Role>('admin');
 
   const value = useMemo<RoleContextValue>(
     () => ({ role, setRole, currentAgentId: currentAgentByRole[role] }),

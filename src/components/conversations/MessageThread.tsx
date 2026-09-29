@@ -21,7 +21,7 @@ export function MessageThread({ conversation }: { conversation: Conversation }) 
     : [];
 
   return (
-    <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto', py: 1.5 }}>
+    <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto', py: '22px', backgroundColor: '#F7F8FA' }}>
       {summary && <AISummary summary={summary} sourceMessages={sourceMessages} />}
       {intent && <IntentDetection intent={intent} />}
 

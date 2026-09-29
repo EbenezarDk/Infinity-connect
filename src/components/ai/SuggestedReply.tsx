@@ -8,13 +8,24 @@ import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import type { AiSuggestedReply } from '../../types';
-import { color } from '../../theme/tokens';
+import { color, radius } from '../../theme/tokens';
 
 interface SuggestedReplyProps {
   suggestion: AiSuggestedReply;
   onUse: (text: string) => void;
   onEdit: (text: string) => void;
 }
+
+const pillSx = {
+  borderRadius: '100px',
+  px: '14px',
+  py: '8px',
+  minHeight: 0,
+  fontSize: '13px',
+  fontWeight: 700,
+  lineHeight: '18px',
+  textTransform: 'none' as const,
+};
 
 export function SuggestedReply({ suggestion, onUse, onEdit }: SuggestedReplyProps) {
   const [dismissed, setDismissed] = useState(false);
@@ -24,54 +35,126 @@ export function SuggestedReply({ suggestion, onUse, onEdit }: SuggestedReplyProp
     <Box
       className="ic-fade-up"
       sx={{
-        mx: { xs: 1.5, md: 3 },
-        mb: 1.25,
-        p: 1.5,
-        borderRadius: 2,
-        border: '1px solid',
-        borderColor: `${color.aiAccent}40`,
-        backgroundColor: color.aiSurface,
+        mx: { xs: 1.5, md: '22px' },
+        mb: 1.5,
+        borderRadius: `${radius.lg}px`,
+        border: `1px solid ${color.border}`,
+        backgroundColor: color.bgSurface,
+        overflow: 'hidden',
+        boxShadow: '0 8px 24px rgba(0, 24, 51, 0.06)',
+        position: 'relative',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.75 }}>
-        <AutoAwesomeRoundedIcon sx={{ fontSize: 16, color: color.aiAccent }} />
-        <Typography variant="body2" sx={{ fontWeight: 700, color: color.aiAccent, flex: 1 }}>
-          Suggested reply · review before sending
-        </Typography>
-        <Tooltip title="Dismiss">
-          <IconButton size="small" onClick={() => setDismissed(true)} aria-label="Dismiss suggested reply">
-            <CloseRoundedIcon sx={{ fontSize: 16 }} />
-          </IconButton>
-        </Tooltip>
-      </Box>
-      <Typography
-        variant="body2"
+      <Box
         sx={{
-          color: 'text.primary',
-          backgroundColor: '#fff',
-          borderRadius: 1.5,
-          p: 1.25,
-          border: '1px solid',
-          borderColor: 'divider',
+          height: 3,
+          background: `linear-gradient(90deg, ${color.primary} 0%, ${color.aiAccent} 55%, #7ED9F7 100%)`,
         }}
-      >
-        {suggestion.text}
-      </Typography>
-      <Box sx={{ display: 'flex', gap: 1, mt: 1, flexWrap: 'wrap' }}>
-        <Button
-          size="small"
-          variant="contained"
-          sx={{ backgroundColor: color.aiAccent, '&:hover': { backgroundColor: '#0A6F96' } }}
-          onClick={() => onUse(suggestion.text)}
+      />
+
+      <Box sx={{ p: '18px', display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              width: 28,
+              height: 28,
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: `linear-gradient(135deg, ${color.primarySurface} 0%, ${color.aiSurface} 100%)`,
+            }}
+          >
+            <AutoAwesomeRoundedIcon sx={{ fontSize: 16, color: color.primary }} />
+          </Box>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography
+              sx={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: color.textMuted,
+                lineHeight: '14px',
+              }}
+            >
+              Draft assist
+            </Typography>
+            <Typography sx={{ fontSize: '14px', fontWeight: 700, lineHeight: '18px', color: color.textPrimary }}>
+              Suggested reply · review before sending
+            </Typography>
+          </Box>
+          <Tooltip title="Dismiss">
+            <IconButton size="small" onClick={() => setDismissed(true)} aria-label="Dismiss suggested reply">
+              <CloseRoundedIcon sx={{ fontSize: 18, color: color.textSecondary }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        <Box
+          sx={{
+            px: '14px',
+            py: '12px',
+            borderRadius: `${radius.md}px`,
+            backgroundColor: color.bgSubtle,
+            border: `1px solid ${color.border}`,
+            borderLeft: `3px solid ${color.primary}`,
+          }}
         >
-          Use suggestion
-        </Button>
-        <Button size="small" variant="outlined" startIcon={<EditRoundedIcon fontSize="small" />} onClick={() => onEdit(suggestion.text)}>
-          Edit
-        </Button>
-        <Button size="small" color="inherit" onClick={() => setDismissed(true)}>
-          Dismiss
-        </Button>
+          <Typography
+            sx={{
+              fontSize: '13px',
+              fontWeight: 500,
+              lineHeight: '20px',
+              color: color.textPrimary,
+              fontStyle: 'italic',
+            }}
+          >
+            “{suggestion.text}”
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Button
+            size="small"
+            variant="contained"
+            onClick={() => onUse(suggestion.text)}
+            sx={{
+              ...pillSx,
+              backgroundColor: color.primary,
+              color: '#fff',
+              boxShadow: 'none',
+              '&:hover': { backgroundColor: color.primaryDark, boxShadow: 'none' },
+            }}
+          >
+            Use suggestion
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            startIcon={<EditRoundedIcon sx={{ fontSize: 16 }} />}
+            onClick={() => onEdit(suggestion.text)}
+            sx={{
+              ...pillSx,
+              borderColor: color.primary,
+              color: color.primary,
+              '&:hover': { borderColor: color.primaryDark, backgroundColor: color.primarySurface },
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            size="small"
+            onClick={() => setDismissed(true)}
+            sx={{
+              ...pillSx,
+              color: color.textSecondary,
+              '&:hover': { backgroundColor: color.bgSubtle },
+            }}
+          >
+            Dismiss
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

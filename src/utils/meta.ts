@@ -20,8 +20,8 @@ export const statusMeta: Record<ConversationStatus, { label: string; main: strin
 export const priorityMeta: Record<Priority, { label: string; main: string; surface: string }> = {
   low: { label: 'Low', main: color.textSecondary, surface: color.bgSubtle },
   normal: { label: 'Normal', main: color.info, surface: color.infoSurface },
-  high: { label: 'High', main: color.warning, surface: color.warningSurface },
-  urgent: { label: 'Urgent', main: color.error, surface: color.errorSurface },
+  high: { label: 'High', main: color.error, surface: color.errorSurface },
+  urgent: { label: 'Urgent', main: '#F79009', surface: '#FFF1DF' },
 };
 
 export const channelHealthMeta: Record<ChannelHealth, { label: string; main: string; surface: string }> = {

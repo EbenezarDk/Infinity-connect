@@ -14,6 +14,7 @@ export function AppShell() {
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [railCollapsed, setRailCollapsed] = useState(true);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -27,7 +28,13 @@ export function AppShell() {
         backgroundColor: color.bgApp,
       }}
     >
-      {isDesktop && <Sidebar collapsed={false} onToggleCollapsed={() => {}} variant="permanent" />}
+      {isDesktop && (
+        <Sidebar
+          collapsed={sidebarCollapsed}
+          onToggleCollapsed={() => setSidebarCollapsed((c) => !c)}
+          variant="permanent"
+        />
+      )}
       {isTablet && (
         <Sidebar collapsed={railCollapsed} onToggleCollapsed={() => setRailCollapsed((c) => !c)} variant="rail" />
       )}
@@ -42,22 +49,10 @@ export function AppShell() {
             minWidth: 0,
             minHeight: 0,
             overflow: 'hidden',
-            p: { xs: 0, md: 1.5 },
+            backgroundColor: color.bgApp,
           }}
         >
-          <Box
-            sx={{
-              height: '100%',
-              overflow: 'hidden',
-              borderRadius: { xs: 0, md: 2.5 },
-              border: { xs: 'none', md: '1px solid' },
-              borderColor: 'divider',
-              backgroundColor: 'background.paper',
-              boxShadow: { xs: 'none', md: '0 1px 2px rgba(11,18,32,0.04)' },
-            }}
-          >
-            <Outlet />
-          </Box>
+          <Outlet />
         </Box>
       </Box>
     </Box>

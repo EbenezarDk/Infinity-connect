@@ -51,7 +51,7 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
   }
 
   return (
-    <Box role="list" aria-label="Conversations">
+    <Box role="list" aria-label="Conversations" sx={{ display: 'flex', flexDirection: 'column', gap: '12px', p: '12px' }}>
       {conversations.map((c) => (
         <ConversationListItem key={c.id} conversation={c} selected={c.id === selectedId} onSelect={() => onSelect(c.id)} />
       ))}

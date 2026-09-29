@@ -38,6 +38,27 @@ export function formatSlaLabel(minutesRemaining?: number): { label: string; over
   return { label: `${minutesRemaining}m left`, overdue: false };
 }
 
+/** Figma list meta: "18m remaining, Priya." */
+export function formatSlaListLabel(
+  minutesRemaining: number | undefined,
+  assigneeFirstName?: string,
+): { timePart: string; rest: string; overdue: boolean } | null {
+  if (minutesRemaining === undefined) return null;
+  const name = assigneeFirstName ? `, ${assigneeFirstName}.` : '.';
+  if (minutesRemaining < 0) {
+    return {
+      timePart: `${Math.abs(minutesRemaining)}m`,
+      rest: ` overdue${name}`,
+      overdue: true,
+    };
+  }
+  return {
+    timePart: `${minutesRemaining}m`,
+    rest: ` remaining${name}`,
+    overdue: false,
+  };
+}
+
 export function initials(name: string): string {
   return name
     .split(' ')

@@ -13,6 +13,7 @@ import { useSnackbar } from '../../context/SnackbarContext';
 import { roleMeta } from '../../utils/meta';
 import { getDefaultRouteForRole } from '../../config/navigation';
 import type { Role } from '../../types';
+import { color, radius } from '../../theme/tokens';
 
 const roles: Role[] = ['agent', 'supervisor', 'campaign_manager', 'admin'];
 
@@ -36,19 +37,36 @@ export function RoleSwitcher() {
         onClick={(e) => setAnchorEl(e.currentTarget)}
         variant="outlined"
         size="small"
-        startIcon={<PersonOutlineRoundedIcon fontSize="small" />}
-        endIcon={<KeyboardArrowDownRoundedIcon fontSize="small" />}
+        startIcon={<PersonOutlineRoundedIcon sx={{ fontSize: 20 }} />}
+        endIcon={<KeyboardArrowDownRoundedIcon sx={{ fontSize: 16 }} />}
         aria-label="Switch demo role"
         sx={{
-          color: 'text.primary',
+          color: '#1A1C3F',
           textTransform: 'none',
-          borderRadius: 2,
-          backgroundColor: 'background.paper',
-          borderColor: 'divider',
-          '&:hover': { borderColor: 'primary.light', backgroundColor: 'primary.light' },
+          borderRadius: `${radius.sm}px`,
+          backgroundColor: color.bgSubtle,
+          borderColor: color.border,
+          borderWidth: '0.5px',
+          px: { sm: 1.5, md: 2 },
+          py: 1.5,
+          minHeight: 44,
+          maxWidth: { sm: 168, md: 'none' },
+          fontWeight: 700,
+          fontSize: '0.875rem',
+          gap: 0.5,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          '& .MuiButton-startIcon': { mr: { sm: 0.5, md: 1 } },
+          '& .MuiButton-endIcon': { ml: { sm: 0.5, md: 1 } },
+          '&:hover': {
+            borderColor: color.borderStrong,
+            backgroundColor: color.bgSubtle,
+            borderWidth: '0.5px',
+          },
         }}
       >
-        View as: {roleMeta[role].label}
+        View as {roleMeta[role].label}
       </Button>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
         {roles.map((r) => (

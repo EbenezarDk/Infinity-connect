@@ -1,51 +1,118 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import LinearProgress from '@mui/material/LinearProgress';
-import PsychologyAltRoundedIcon from '@mui/icons-material/PsychologyAltRounded';
 import type { AiIntent } from '../../types';
-import { color } from '../../theme/tokens';
+import { color, radius } from '../../theme/tokens';
 
 export function IntentDetection({ intent }: { intent: AiIntent }) {
+  const confidencePct = Math.round(intent.confidence * 100);
+
   return (
     <Box
       sx={{
-        mx: { xs: 1.5, md: 3 },
-        mb: 1,
-        p: 1.25,
-        borderRadius: 1.5,
-        border: '1px solid',
-        borderColor: `${color.aiAccent}33`,
-        backgroundColor: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1.25,
-        flexWrap: 'wrap',
+        mx: { xs: 1.5, md: '22px' },
+        mb: 1.5,
+        borderRadius: `${radius.md}px`,
+        border: `1px solid ${color.border}`,
+        backgroundColor: color.bgSurface,
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr', sm: '1.1fr 0.9fr 1.2fr' },
+        overflow: 'hidden',
+        boxShadow: '0 1px 2px rgba(0, 24, 51, 0.04)',
       }}
     >
-      <PsychologyAltRoundedIcon sx={{ fontSize: 16, color: color.aiAccent }} />
-      <Box sx={{ flex: 1, minWidth: 160 }}>
-        <Typography variant="caption" color="text.secondary">
+      <Box sx={{ px: '18px', py: '14px', minWidth: 0 }}>
+        <Typography
+          sx={{
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            color: color.textMuted,
+            mb: 0.75,
+          }}
+        >
           Detected intent
         </Typography>
-        <Typography variant="body2" sx={{ fontWeight: 700 }}>
-          {intent.intent}
-        </Typography>
+        <Box
+          sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            px: '10px',
+            py: '6px',
+            borderRadius: '100px',
+            backgroundColor: color.primarySurface,
+            color: color.primary,
+          }}
+        >
+          <Typography sx={{ fontSize: '13px', fontWeight: 700, lineHeight: '16px' }}>{intent.intent}</Typography>
+        </Box>
       </Box>
-      <Box sx={{ minWidth: 110 }}>
-        <Typography variant="caption" color="text.secondary">
-          Confidence · {Math.round(intent.confidence * 100)}%
+
+      <Box
+        sx={{
+          px: '18px',
+          py: '14px',
+          borderLeft: { sm: `1px solid ${color.border}` },
+          borderTop: { xs: `1px solid ${color.border}`, sm: 'none' },
+          minWidth: 0,
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            color: color.textMuted,
+            mb: 0.75,
+          }}
+        >
+          Confidence · {confidencePct}%
         </Typography>
-        <LinearProgress
-          variant="determinate"
-          value={intent.confidence * 100}
-          sx={{ mt: 0.4, '& .MuiLinearProgress-bar': { backgroundColor: color.aiAccent } }}
-        />
+        <Box
+          sx={{
+            height: 8,
+            borderRadius: radius.pill,
+            backgroundColor: color.bgSubtle,
+            overflow: 'hidden',
+            position: 'relative',
+          }}
+        >
+          <Box
+            sx={{
+              height: '100%',
+              width: `${confidencePct}%`,
+              borderRadius: radius.pill,
+              background: `linear-gradient(90deg, ${color.aiAccent} 0%, ${color.primary} 100%)`,
+              transition: 'width 280ms ease',
+            }}
+          />
+        </Box>
       </Box>
-      <Box sx={{ flex: 1, minWidth: 160, textAlign: { xs: 'left', sm: 'right' } }}>
-        <Typography variant="caption" color="text.secondary">
+
+      <Box
+        sx={{
+          px: '18px',
+          py: '14px',
+          borderLeft: { sm: `1px solid ${color.border}` },
+          borderTop: { xs: `1px solid ${color.border}`, sm: 'none' },
+          minWidth: 0,
+          background: `linear-gradient(135deg, ${color.bgSurface} 40%, ${color.primarySurface} 100%)`,
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            color: color.textMuted,
+            mb: 0.75,
+          }}
+        >
           Suggested next step
         </Typography>
-        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+        <Typography sx={{ fontSize: '13px', fontWeight: 700, lineHeight: '18px', color: color.textPrimary }}>
           {intent.suggestedNextStep}
         </Typography>
       </Box>

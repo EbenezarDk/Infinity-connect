@@ -20,7 +20,16 @@ export function PriorityChip({ priority, size = 'small' }: { priority: Priority;
     <Chip
       size={size}
       label={meta.label}
-      sx={{ backgroundColor: meta.surface, color: meta.main, fontWeight: 700, '& .MuiChip-label': { px: 1 } }}
+      sx={{
+        height: 'auto',
+        borderRadius: '100px',
+        backgroundColor: meta.surface,
+        color: meta.main,
+        fontWeight: 500,
+        fontSize: '12px',
+        lineHeight: '18px',
+        '& .MuiChip-label': { px: '10px', py: '6px' },
+      }}
     />
   );
 }

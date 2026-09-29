@@ -1,6 +1,6 @@
 /**
  * Design tokens for InfinityConnect.
- * Visual north star: cool light SaaS (Feedly / Google Workspace / Dust) — not purple demo MUI.
+ * Visual source of truth: Figma Design file (node 21:2890).
  */
 
 export const space = {
@@ -8,10 +8,10 @@ export const space = {
   xs: 8,
   sm: 12,
   md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 40,
-  xxxl: 48,
+  lg: 22,
+  xl: 24,
+  xxl: 32,
+  xxxl: 40,
 } as const;
 
 export const radius = {
@@ -23,39 +23,47 @@ export const radius = {
 } as const;
 
 export const color = {
-  // Neutral surfaces — cool airy field
-  bgApp: '#F4F7FB',
+  // Neutral surfaces — clean white SaaS from Figma
+  bgApp: '#FFFFFF',
   bgSurface: '#FFFFFF',
-  bgSubtle: '#EEF2F8',
+  bgSubtle: '#F5F5F5',
   bgElevated: '#FFFFFF',
-  bgInverse: '#0B1220',
-  bgRail: '#F8FAFD',
+  bgInverse: '#001833',
+  bgRail: '#FFFFFF',
 
-  border: '#E2E8F0',
-  borderStrong: '#CBD5E1',
-  divider: '#E8EEF5',
+  border: '#E2E2E4',
+  borderStrong: '#D0D0D4',
+  divider: '#E2E2E4',
 
-  textPrimary: '#0B1220',
-  textSecondary: '#5B6575',
-  textMuted: '#8B95A5',
-  textInverse: '#F4F7FB',
-  textDisabled: '#B0B8C4',
+  textPrimary: '#001833',
+  textSecondary: '#6D6E78',
+  textMuted: '#76768B',
+  textInverse: '#FFFFFF',
+  textDisabled: '#A0A1AB',
 
-  // Brand — cool professional blue
-  primary: '#1A6BFF',
-  primaryDark: '#0F4FD1',
-  primaryLight: '#D6E6FF',
-  primarySurface: '#EBF2FF',
+  // Brand — iOS-style system blue from Figma (#007AFF)
+  primary: '#007AFF',
+  primaryDark: '#0062CC',
+  primaryLight: '#D6E9FF',
+  primarySurface: '#E8F2FF',
 
   // Semantic
-  success: '#159A5A',
-  successSurface: '#E3F6EC',
-  warning: '#C47A0A',
-  warningSurface: '#FCF0DA',
-  error: '#D13A32',
-  errorSurface: '#FBEAE9',
-  info: '#1A6BFF',
-  infoSurface: '#EBF2FF',
+  success: '#168969',
+  successSurface: '#F0FFF7',
+  warning: '#F79009',
+  warningSurface: '#FFF7EB',
+  error: '#E31F26',
+  errorSurface: '#FDF0F0',
+  info: '#007AFF',
+  infoSurface: '#E8F2FF',
+
+  // Trend / KPI accents
+  trendUp: '#F03131',
+  trendDown: '#168969',
+  kpiNegativeBorder: '#F0CBCB',
+  kpiPositiveBorder: '#CBF0DA',
+  kpiNegativeWash: 'rgb(243, 215, 215)',
+  kpiPositiveWash: 'rgb(240, 255, 247)',
 
   // Channel semantic accents (identity only)
   channelWhatsapp: '#1FA855',
@@ -70,14 +78,19 @@ export const color = {
   // AI — soft cyan-blue, restrained
   aiAccent: '#0E8FBF',
   aiSurface: '#E8F6FB',
+
+  // Status labels (agent presence)
+  statusOnline: '#168969',
+  statusAway: '#F79009',
+  statusOffline: '#6D6E78',
 } as const;
 
 export const elevation = {
   0: 'none',
-  1: '0 1px 2px rgba(11, 18, 32, 0.05)',
-  2: '0 2px 8px rgba(11, 18, 32, 0.06)',
-  3: '0 8px 24px rgba(11, 18, 32, 0.08)',
-  4: '0 16px 40px rgba(11, 18, 32, 0.10)',
+  1: '0 1px 2px rgba(0, 24, 51, 0.04)',
+  2: '0 2px 8px rgba(0, 24, 51, 0.06)',
+  3: '0 8px 24px rgba(0, 24, 51, 0.08)',
+  4: '0 16px 40px rgba(0, 24, 51, 0.10)',
 } as const;
 
 export const zIndex = {
@@ -86,6 +99,17 @@ export const zIndex = {
   drawer: 1300,
   modal: 1400,
   toast: 1500,
+} as const;
+
+export const layout = {
+  sidebarExpanded: 220,
+  sidebarCollapsed: 72,
+  topbarHeight: 76,
+  pageHeaderHeight: 76,
+  /** Conversation header + context panel tabs share this so their bottoms align. */
+  inboxHeaderHeight: 78,
+  contentPaddingX: 16,
+  contentPaddingY: 24,
 } as const;
 
 export const breakpointsPx = {

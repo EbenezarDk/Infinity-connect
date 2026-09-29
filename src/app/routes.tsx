@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: <AppShell />,
     children: [
-      { index: true, element: <Navigate to="/inbox" replace /> },
+      { index: true, element: <Navigate to="/analytics" replace /> },
       { path: 'inbox', element: <InboxPage /> },
       { path: 'contacts', element: withSuspense(<ContactsPage />) },
       { path: 'contacts/:contactId', element: withSuspense(<ContactProfilePage />) },
@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
       { path: 'analytics', element: withSuspense(<AnalyticsPage />) },
       { path: 'channels', element: withSuspense(<ChannelsPage />) },
       { path: 'settings', element: withSuspense(<SettingsPage />) },
-      { path: '*', element: <Navigate to="/inbox" replace /> },
+      { path: '*', element: <Navigate to="/analytics" replace /> },
     ],
   },
 ]);

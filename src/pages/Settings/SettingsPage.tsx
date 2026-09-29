@@ -20,10 +20,11 @@ import HorizontalRuleRoundedIcon from '@mui/icons-material/HorizontalRuleRounded
 import { agents } from '../../data/agents';
 import { ContactAvatar } from '../../components/common/ContactAvatar';
 import { PermissionGate } from '../../components/common/PermissionGate';
+import { PageHeader } from '../../components/common/PageHeader';
 import { useSnackbar } from '../../context/SnackbarContext';
 import { hasPermission, type PermissionAction } from '../../context/RoleContext';
 import { roleMeta } from '../../utils/meta';
-import { color } from '../../theme/tokens';
+import { color, radius } from '../../theme/tokens';
 import type { Role } from '../../types';
 
 type SettingsTab = 'users' | 'roles' | 'integrations' | 'workspace';
@@ -64,25 +65,32 @@ export function SettingsPage() {
   const { notify } = useSnackbar();
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'auto' }}>
-      <Box sx={{ px: { xs: 2, md: 3 }, pt: { xs: 2, md: 3 }, pb: 1 }}>
-        <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Settings</Typography>
-        <Typography variant="body2" color="text.secondary">
-          Manage your workspace, users, permissions, and integrations
-        </Typography>
-      </Box>
+    <Box sx={{ height: '100%', overflowY: 'auto', backgroundColor: color.bgApp }}>
+      <PageHeader
+        title="Settings"
+        subtitle="Manage your workspace, users, permissions, and integrations"
+        tabs={
+          <Tabs
+            value={tab}
+            onChange={(_, v) => setTab(v)}
+            sx={{
+              minHeight: 44,
+              '& .MuiTabs-flexContainer': { alignItems: 'flex-end' },
+              '& .MuiTab-root': { minHeight: 44, pb: 1 },
+            }}
+          >
+            <Tab value="users" label="Users" />
+            <Tab value="roles" label="Roles & Permissions" />
+            <Tab value="integrations" label="Integrations" />
+            <Tab value="workspace" label="Workspace" />
+          </Tabs>
+        }
+      />
 
-      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ px: { xs: 2, md: 3 }, borderBottom: '1px solid', borderColor: 'divider' }}>
-        <Tab value="users" label="Users" />
-        <Tab value="roles" label="Roles & Permissions" />
-        <Tab value="integrations" label="Integrations" />
-        <Tab value="workspace" label="Workspace" />
-      </Tabs>
-
-      <Box sx={{ p: { xs: 2, md: 3 } }}>
+      <Box sx={{ p: { xs: 2, md: 2 }, pt: { xs: 2, md: 3 } }}>
         {tab === 'users' && (
           <PermissionGate action="manage_users" fallbackLabel="Only administrators can manage users.">
-            <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, backgroundColor: 'background.paper' }}>
+            <TableContainer sx={{ border: `1px solid ${color.border}`, borderRadius: `${radius.md}px`, backgroundColor: color.bgSurface }}>
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -130,7 +138,7 @@ export function SettingsPage() {
         )}
 
         {tab === 'roles' && (
-          <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, backgroundColor: 'background.paper', overflowX: 'auto' }}>
+          <TableContainer sx={{ border: `1px solid ${color.border}`, borderRadius: `${radius.md}px`, backgroundColor: color.bgSurface, overflowX: 'auto' }}>
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -175,10 +183,9 @@ export function SettingsPage() {
                   alignItems: 'center',
                   gap: 1.5,
                   p: 2,
-                  borderRadius: 2,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  backgroundColor: 'background.paper',
+                  borderRadius: `${radius.md}px`,
+                  border: `1px solid ${color.border}`,
+                  backgroundColor: color.bgSurface,
                 }}
               >
                 <Box sx={{ flex: 1 }}>

@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
-import { color } from '../../theme/tokens';
+import { color, radius, space } from '../../theme/tokens';
 
 interface KpiCardProps {
   label: string;
@@ -11,46 +11,82 @@ interface KpiCardProps {
   icon?: React.ReactNode;
 }
 
-export function KpiCard({ label, value, trend, icon }: KpiCardProps) {
+export function KpiCard({ label, value, trend }: KpiCardProps) {
+  const positive = trend?.positive ?? true;
+  const borderColor = positive ? color.kpiPositiveBorder : color.kpiNegativeBorder;
+  const wash = positive ? color.kpiPositiveWash : color.kpiNegativeWash;
+
   return (
     <Box
       sx={{
         flex: '1 1 200px',
-        minWidth: 180,
-        p: 2.25,
-        borderRadius: 2.5,
-        border: '1px solid',
-        borderColor: 'divider',
-        backgroundColor: 'background.paper',
-        backgroundImage: `linear-gradient(180deg, ${color.primarySurface}55 0%, transparent 48%)`,
-        transition: 'box-shadow 140ms ease, border-color 140ms ease',
-        '&:hover': { borderColor: color.primaryLight, boxShadow: '0 8px 24px rgba(11,18,32,0.06)' },
+        minWidth: { xs: 'calc(50% - 8px)', sm: 180 },
+        maxWidth: { xs: '100%', sm: 'none' },
+        p: `${space.sm}px`,
+        borderRadius: `${radius.md}px`,
+        border: `1px solid ${borderColor}`,
+        backgroundColor: color.bgSurface,
+        backgroundImage: `linear-gradient(-28deg, ${wash} 5%, transparent 64%), linear-gradient(90deg, #fff 0%, #fff 100%)`,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1.5,
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Typography
+          sx={{
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            lineHeight: '18px',
+            color: '#000',
+          }}
+        >
           {label}
         </Typography>
-        {icon && (
-          <Box sx={{ color: color.primary, display: 'flex', alignItems: 'center' }}>{icon}</Box>
-        )}
+        <Typography
+          sx={{
+            fontSize: '1.375rem',
+            fontWeight: 700,
+            lineHeight: '26px',
+            color: '#000',
+          }}
+        >
+          {value}
+        </Typography>
       </Box>
-      <Typography variant="h2" sx={{ mt: 0.5, fontSize: '1.85rem', fontWeight: 800, letterSpacing: '-0.03em' }}>
-        {value}
-      </Typography>
       {trend && (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.4, mt: 0.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {trend.direction === 'up' ? (
-            <ArrowUpwardRoundedIcon sx={{ fontSize: 14, color: trend.positive ? color.success : color.error }} />
+            <ArrowUpwardRoundedIcon
+              sx={{ fontSize: 16, color: trend.positive ? color.trendDown : color.trendUp }}
+            />
           ) : (
-            <ArrowDownwardRoundedIcon sx={{ fontSize: 14, color: trend.positive ? color.success : color.error }} />
+            <ArrowDownwardRoundedIcon
+              sx={{ fontSize: 16, color: trend.positive ? color.trendDown : color.trendUp }}
+            />
           )}
-          <Typography variant="caption" sx={{ color: trend.positive ? color.success : color.error, fontWeight: 700 }}>
-            {trend.label}
-          </Typography>
-          <Typography variant="caption" color="text.disabled">
-            vs last week
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Typography
+              sx={{
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                lineHeight: '18px',
+                color: trend.positive ? color.trendDown : color.trendUp,
+              }}
+            >
+              {trend.label}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                lineHeight: '18px',
+                color: '#000',
+              }}
+            >
+              vs last week
+            </Typography>
+          </Box>
         </Box>
       )}
     </Box>

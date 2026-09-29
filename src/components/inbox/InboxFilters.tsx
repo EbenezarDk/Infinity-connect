@@ -18,37 +18,34 @@ interface InboxFiltersProps {
 
 export function InboxFilters({ filter, onFilterChange, query, onQueryChange, counts }: InboxFiltersProps) {
   return (
-    <Box sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>
-      <Box sx={{ px: 2, pt: 0.5, pb: 1.25 }}>
-        <Box
+    <Box sx={{ borderBottom: `1px solid ${color.border}`, px: { xs: 2, sm: '22px' }, pt: 0, pb: 0 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.75,
+          height: 44,
+          px: 2,
+          backgroundColor: color.bgSubtle,
+          borderRadius: 0,
+        }}
+      >
+        <SearchRoundedIcon sx={{ fontSize: 20, color: color.textSecondary }} />
+        <InputBase
+          placeholder="Search conversation"
+          value={query}
+          onChange={(e) => onQueryChange(e.target.value)}
+          fullWidth
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            px: 1.5,
-            py: 0.75,
-            borderRadius: 2,
-            border: '1px solid',
-            borderColor: 'divider',
-            backgroundColor: color.bgSurface,
-            transition: 'border-color 140ms ease, box-shadow 140ms ease',
-            '&:focus-within': {
-              borderColor: color.primary,
-              boxShadow: `0 0 0 3px ${color.primarySurface}`,
-            },
+            fontSize: '14px',
+            fontWeight: 500,
+            color: color.textPrimary,
+            '& input::placeholder': { color: color.textSecondary, opacity: 1 },
           }}
-        >
-          <SearchRoundedIcon fontSize="small" sx={{ color: 'text.secondary' }} />
-          <InputBase
-            placeholder="Search conversations"
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            fullWidth
-            sx={{ fontSize: '0.8125rem' }}
-            inputProps={{ 'aria-label': 'Search conversations' }}
-          />
-        </Box>
+          inputProps={{ 'aria-label': 'Search conversations' }}
+        />
       </Box>
+
       <Tabs
         value={filter}
         onChange={(_, v) => onFilterChange(v)}
@@ -57,21 +54,45 @@ export function InboxFilters({ filter, onFilterChange, query, onQueryChange, cou
         allowScrollButtonsMobile
         aria-label="Inbox filters"
         sx={{
-          px: 0.5,
-          minHeight: 40,
+          minHeight: 0,
+          pt: '22px',
+          '& .MuiTabs-flexContainer': { gap: 0 },
+          '& .MuiTabs-indicator': {
+            height: 2,
+            borderRadius: '4px 4px 0 0',
+            backgroundColor: color.primary,
+          },
           '& .MuiTabs-scrollButtons': {
             '&.Mui-disabled': { opacity: 0.3 },
           },
         }}
       >
-        {inboxFilterOrder.map((f) => (
-          <Tab
-            key={f.key}
-            value={f.key}
-            label={`${f.label}${counts[f.key] ? ` (${counts[f.key]})` : ''}`}
-            sx={{ minHeight: 40, px: 1.25 }}
-          />
-        ))}
+        {inboxFilterOrder.map((f) => {
+          const count = counts[f.key];
+          const label = count ? `${f.label}  (${count})` : f.label;
+          return (
+            <Tab
+              key={f.key}
+              value={f.key}
+              label={label}
+              sx={{
+                minHeight: 0,
+                minWidth: 0,
+                px: 1.5,
+                py: 0,
+                pb: '4px',
+                textTransform: 'none',
+                fontSize: '14px',
+                fontWeight: 700,
+                lineHeight: '18px',
+                color: color.textSecondary,
+                '&.Mui-selected': {
+                  color: color.primary,
+                },
+              }}
+            />
+          );
+        })}
       </Tabs>
     </Box>
   );

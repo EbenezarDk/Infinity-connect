@@ -19,8 +19,10 @@ import { contacts } from '../../data/contacts';
 import { ContactAvatar } from '../../components/common/ContactAvatar';
 import { ChannelIcon } from '../../components/common/ChannelIcon';
 import { EmptyState } from '../../components/common/EmptyState';
+import { PageHeader } from '../../components/common/PageHeader';
 import { formatRelativeTime } from '../../utils/format';
 import { channelMeta } from '../../utils/meta';
+import { color, radius } from '../../theme/tokens';
 
 export function ContactsPage() {
   const [query, setQuery] = useState('');
@@ -42,38 +44,37 @@ export function ContactsPage() {
   }, [query]);
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'auto', p: { xs: 2, md: 3 } }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 1.5 }}>
-        <Box>
-          <Typography variant="h3" sx={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Contacts</Typography>
-          <Typography variant="body2" color="text.secondary">
-            {contacts.length} customers across all channels
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            px: 1.5,
-            py: 0.75,
-            borderRadius: 1.5,
-            border: '1px solid',
-            borderColor: 'divider',
-            backgroundColor: 'background.paper',
-            width: { xs: '100%', sm: 280 },
-          }}
-        >
-          <SearchRoundedIcon fontSize="small" sx={{ color: 'text.secondary' }} />
-          <InputBase
-            placeholder="Search contacts…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            fullWidth
-            sx={{ fontSize: '0.8125rem' }}
-          />
-        </Box>
-      </Box>
+    <Box sx={{ height: '100%', overflowY: 'auto', backgroundColor: color.bgApp }}>
+      <PageHeader
+        title="Contacts"
+        subtitle={`${contacts.length} customers across all channels`}
+        actions={
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              px: 2,
+              py: 1.5,
+              borderRadius: `${radius.sm}px`,
+              backgroundColor: color.bgSubtle,
+              width: { xs: '100%', sm: 232 },
+              minHeight: 44,
+              mb: { xs: 1.5, md: 0 },
+            }}
+          >
+            <InputBase
+              placeholder="Search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              fullWidth
+              sx={{ fontSize: '0.875rem', fontWeight: 700, color: color.textMuted }}
+            />
+            <SearchRoundedIcon sx={{ fontSize: 20, color: color.textPrimary }} />
+          </Box>
+        }
+      />
+      <Box sx={{ p: { xs: 2, md: 2 }, pt: { xs: 2, md: 3 } }}>
 
       {filtered.length === 0 ? (
         <EmptyState
@@ -87,7 +88,7 @@ export function ContactsPage() {
             <ButtonBase
               key={c.id}
               onClick={() => navigate(`/contacts/${c.id}`)}
-              sx={{ display: 'block', width: '100%', textAlign: 'left', p: 1.5, borderRadius: 2, border: '1px solid', borderColor: 'divider', backgroundColor: 'background.paper' }}
+              sx={{ display: 'block', width: '100%', textAlign: 'left', p: 1.5, borderRadius: `${radius.md}px`, border: `1px solid ${color.border}`, backgroundColor: color.bgSurface }}
             >
               <Box sx={{ display: 'flex', gap: 1.25 }}>
                 <ContactAvatar name={c.name} color={c.avatarColor} />
@@ -110,7 +111,7 @@ export function ContactsPage() {
           ))}
         </Box>
       ) : (
-        <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, backgroundColor: 'background.paper' }}>
+        <TableContainer sx={{ border: `1px solid ${color.border}`, borderRadius: `${radius.md}px`, backgroundColor: color.bgSurface }}>
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -187,6 +188,7 @@ export function ContactsPage() {
           </Table>
         </TableContainer>
       )}
+      </Box>
     </Box>
   );
 }
