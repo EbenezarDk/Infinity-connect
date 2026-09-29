@@ -1,32 +1,30 @@
-# React + TypeScript + Vite
+# InfinityConnect
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Omnichannel customer communication workspace prototype — WhatsApp, SMS, Email, and RCS in one conversation-first UI.
 
-Currently, two official plugins are available:
+Built with React, TypeScript, Vite, and MUI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Run locally
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Then open the local Vite URL (typically `http://localhost:5173`).
+
+## What's included
+
+- Unified Inbox with channel-aware composer
+- Customer context across channels
+- Role demo switcher (Agent / Supervisor / Campaign Manager / Administrator)
+- Campaigns, Channels, Analytics, Automations, and Settings screens
+- Local mock data only — no backend
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Type-check and production build |
+| `npm run preview` | Preview production build |
