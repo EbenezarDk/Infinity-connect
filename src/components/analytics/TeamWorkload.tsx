@@ -59,11 +59,19 @@ export function TeamWorkload() {
         </Typography>
       </Box>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }} role="list" aria-label="Team workload">
-        {teamAgents.map((agent) => {
+      <Box sx={{ display: 'flex', flexDirection: 'column' }} role="list" aria-label="Team workload">
+        {teamAgents.map((agent, index) => {
           const fill = (agent.activeConversations / maxLoad) * 100;
+          const isLast = index === teamAgents.length - 1;
           return (
-            <Box key={agent.id} role="listitem" sx={{ width: '100%' }}>
+            <Box
+              key={agent.id}
+              role="listitem"
+              sx={{
+                width: '100%',
+                borderBottom: isLast ? 'none' : '1px solid rgba(226, 226, 228, 0.3)',
+              }}
+            >
               <ButtonBase
                 onClick={() => navigate(`/inbox?assignee=${encodeURIComponent(agent.id)}`)}
                 aria-label={`Open inbox for ${agent.name}, ${agent.activeConversations} active${
@@ -75,7 +83,7 @@ export function TeamWorkload() {
                   gap: { xs: '12px', sm: '22px' },
                   width: '100%',
                   px: 1,
-                  py: 1.25,
+                  py: '10px',
                   mx: -1,
                   borderRadius: `${radius.sm}px`,
                   textAlign: 'left',

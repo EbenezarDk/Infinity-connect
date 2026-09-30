@@ -38,7 +38,7 @@ export function AnalyticsPage() {
             sx={{
               minHeight: 44,
               width: '100%',
-              '& .MuiTabs-flexContainer': { alignItems: 'flex-end', gap: '16px' },
+              '& .MuiTabs-list': { alignItems: 'flex-end', gap: '16px' },
               '& .MuiTab-root': { minHeight: 44, pb: 1, minWidth: 'auto', px: 0 },
             }}
           >
